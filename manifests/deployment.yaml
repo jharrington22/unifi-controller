@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: unifi-controller
+  name: unifi-controller
+  namespace: unifi-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi-controller
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: unifi-controller
+    spec:
+      affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - raspberrypi-kube-2
+      containers:
+      - image: jharrington22/unifi-controller:test
+        imagePullPolicy: Always
+        name: unifi-controller
+        volumeMounts:
+        - mountPath: /config
+          name: unifi-controller-data
+      volumes:
+      - name: unifi-controller-data
+        persistentVolumeClaim:
+          claimName: unifi-pv-claim
+status: {}
