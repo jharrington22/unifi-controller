@@ -11,10 +11,6 @@ spec:
     port: 8443
     protocol: TCP
     targetPort: 8443
-  - name: stun
-    port: 3478
-    protocol: TCP
-    targetPort: 3478
   - name: device-inform
     port: 8080
     protocol: TCP
@@ -27,14 +23,6 @@ spec:
     port: 6789
     protocol: TCP
     targetPort: 6789
-  - name: device-discovery
-    port: 10001
-    protocol: UDP
-    targetPort: 10001
-  - name: controller-discovery
-    port: 1900
-    protocol: UDP
-    targetPort: 1900
   selector:
     app: unifi-controller
   type: LoadBalancer
