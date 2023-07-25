@@ -19,16 +19,16 @@ spec:
         app: unifi-controller
     spec:
       affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - raspberrypi-kube-2
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - raspberrypi-kube-2
       containers:
-      - image: jharrington22/unifi-controller:test
+      - image: quay.io/jharrington22/unifi-controller:v0.1.4-e6e3f8e
         imagePullPolicy: Always
         name: unifi-controller
         volumeMounts:

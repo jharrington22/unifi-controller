@@ -30,24 +30,24 @@ docker-build: build
 .PHONY: build
 build:
 	# Build and tag images for quay.io
-	docker build . -f $(DOCKERFILE) -t $(QUAY_IMAGE_URI)
-	docker tag $(QUAY_IMAGE_URI) $(QUAY_IMAGE_URI_LATEST)
+	podman build --platform linux/arm . -f $(DOCKERFILE) -t $(QUAY_IMAGE_URI)
+	podman tag $(QUAY_IMAGE_URI) $(QUAY_IMAGE_URI_LATEST)
 	# Tag docker images
-	docker tag $(QUAY_IMAGE_URI) $(DOCKER_IMAGE_URI)
-	docker tag $(DOCKER_IMAGE_URI) $(DOCKER_IMAGE_URI_LATEST)
+	podman tag $(QUAY_IMAGE_URI) $(DOCKER_IMAGE_URI)
+	podman tag $(DOCKER_IMAGE_URI) $(DOCKER_IMAGE_URI_LATEST)
 
 .PHONY: push
 push:
 	# Push Quay.io images
-	docker push $(QUAY_IMAGE_URI)
-	docker push $(QUAY_IMAGE_URI_LATEST)
+	podman push $(QUAY_IMAGE_URI)
+	podman push $(QUAY_IMAGE_URI_LATEST)
 	# Push Docker images
-	docker push $(DOCKER_IMAGE_URI)
-	docker push $(DOCKER_IMAGE_URI_LATEST)
+	podman push $(DOCKER_IMAGE_URI)
+	podman push $(DOCKER_IMAGE_URI_LATEST)
 
 .PHONY: login
 login:
 	# Login to quay.io
-	docker login -u "$$QUAY_BOT_USERNAME" --password "$$QUAY_BOT_PASSWORD" quay.io
+	podman login -u "$$QUAY_BOT_USERNAME" --password "$$QUAY_BOT_PASSWORD" quay.io
 	# Login to docker
-	docker login -u "$$DOCKER_TOKEN" --password "$$DOCKER_SECRET_TOKEN"
+	podman login -u "$$DOCKER_TOKEN" --password "$$DOCKER_SECRET_TOKEN"

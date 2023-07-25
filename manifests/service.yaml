@@ -11,6 +11,18 @@ spec:
     port: 8443
     protocol: TCP
     targetPort: 8443
+  - name: device-inform
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: guest-portal
+    port: 8980
+    protocol: TCP
+    targetPort: 8880
+  - name: throughput-speedtest
+    port: 6789
+    protocol: TCP
+    targetPort: 6789
   selector:
     app: unifi-controller
   type: LoadBalancer
