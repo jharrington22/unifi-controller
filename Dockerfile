@@ -102,16 +102,16 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /config
 
-# 3478 - STUN
 # 8080 - device inform (http)
 # 8443 - web management (https)
 # 8843 - guest portal (https)
 # 8880 - guest portal (http)
 # 6789 - throughput / mobile speedtest (tcp)
 # 1900 - controller discovery (udp)
+# 3478 - STUN (udp)
 # 10001 - device discovery (udp)
 # ref https://help.ubnt.com/hc/en-us/articles/218506997-UniFi-Ports-Used
-EXPOSE 3478/udp 8080 8081 8443 8843 8880 6789 10001/udp 1900/udp
+EXPOSE 8080 8081 8443 8843 8880 6789 10001/udp 3478/udp 1900/udp
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
