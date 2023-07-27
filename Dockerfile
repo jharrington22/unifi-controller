@@ -36,6 +36,8 @@ RUN apt-get update && apt-get install -y \
 	ca-certificates \
 	dirmngr \
 	gnupg \
+	logrotate \
+	software-properties-common \
 	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -73,8 +75,8 @@ RUN set -ex; \
 	apt-get purge -y --auto-remove $fetchDeps
 
 # add mongo repo
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 \
-	&& echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" >> /etc/apt/sources.list.d/mongo.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 \
+	&& echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" >> /etc/apt/sources.list.d/mongo.list
 
 
 # install packages
@@ -88,7 +90,7 @@ RUN apt-get update && apt-get install -y \
 
 # unifi version
 # From: https://www.ubnt.com/download/unifi/
-ENV UNIFI_VERSION "5.11.46"
+ENV UNIFI_VERSION "7.0.25"
 
 # install unifi
 RUN apt-get update && apt-get install -y \
