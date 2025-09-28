@@ -30,7 +30,7 @@ docker-build: build
 .PHONY: build
 build:
 	# Build and tag images for quay.io
-	podman build --platform linux/arm . -f $(DOCKERFILE) -t $(QUAY_IMAGE_URI)
+	podman build --platform linux/arm64 . -f $(DOCKERFILE) -t $(QUAY_IMAGE_URI)
 	podman tag $(QUAY_IMAGE_URI) $(QUAY_IMAGE_URI_LATEST)
 	# Tag docker images
 	podman tag $(QUAY_IMAGE_URI) $(DOCKER_IMAGE_URI)

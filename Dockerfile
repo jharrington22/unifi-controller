@@ -26,21 +26,21 @@
 # 	set-inform http://ip_of_docker_host:8080/inform
 #
 
-FROM ubuntu:24.10
+FROM ubuntu:24.04
 
 # environment settings
 ENV DEBIAN_FRONTEND="noninteractive"
 
 # install deps
 RUN apt-get update && apt-get install -y \
+	curl \
 	ca-certificates \
 	dirmngr \
 	gnupg \
 	logrotate \
 	software-properties-common \
 	sudo \
-	--no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/*
+	--no-install-recommends
 
 # install gosu
 ENV GOSU_VERSION=1.17
@@ -75,8 +75,13 @@ RUN set -ex; \
 	\
 	apt-get purge -y --auto-remove $fetchDeps
 
+# add mongo GPG key
+RUN curl -fsSL https://pgp.mongodb.com/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+   --dearmor
+
 # add mongo repo
-RUN echo 'deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
 
 # Java JDK
 # RUN add-apt-repository ppa:openjdk-r/ppa
@@ -85,8 +90,8 @@ RUN echo 'deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.
 RUN apt-get update && apt-get install -y \
 	binutils \
 	jsvc \
-	mongodb-server \
-	openjdk-8-jre-headless \
+	mongodb-org \
+	openjdk-21-jre-headless \
 	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -96,9 +101,7 @@ ENV UNIFI_VERSION "9.3.45"
 
 # install unifi
 RUN apt-get update && apt-get install -y \
-		curl \
-		--no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/* \
+	--no-install-recommends \
 	&& curl -o /tmp/unifi.deb -L "http://dl.ubnt.com/unifi/${UNIFI_VERSION}/unifi_sysvinit_all.deb" \
 	&& dpkg -i /tmp/unifi.deb \
 	&& rm -rf /tmp/unifi.deb \
