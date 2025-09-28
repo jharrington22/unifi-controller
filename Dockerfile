@@ -91,7 +91,7 @@ RUN apt-get update && apt-get install -y \
 	binutils \
 	jsvc \
 	mongodb-org \
-	openjdk-21-jre-headless \
+	openjdk-17-jre-headless \
 	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
