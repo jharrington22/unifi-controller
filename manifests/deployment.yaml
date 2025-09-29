@@ -28,7 +28,7 @@ spec:
                 values:
                 - raspberrypi-kube-11
       containers:
-      - image: quay.io/jharrington22/unifi-controller:v0.1.4-e6e3f8e
+      - image: quay.io/jharrington22/unifi-controller:v0.1.17-bb33aa3
         imagePullPolicy: Always
         name: unifi-controller
         volumeMounts:

@@ -97,7 +97,7 @@ RUN apt-get update && apt-get install -y \
 
 # unifi version
 # From: https://www.ubnt.com/download/unifi/
-ENV UNIFI_VERSION "9.3.45"
+ENV UNIFI_VERSION "9.4.19"
 
 # install unifi
 RUN apt-get update && apt-get install -y \
