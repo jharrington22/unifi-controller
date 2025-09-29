@@ -26,23 +26,24 @@
 # 	set-inform http://ip_of_docker_host:8080/inform
 #
 
-FROM ubuntu:16.04
+FROM ubuntu:24.04
 
 # environment settings
 ENV DEBIAN_FRONTEND="noninteractive"
 
 # install deps
 RUN apt-get update && apt-get install -y \
+	curl \
 	ca-certificates \
 	dirmngr \
 	gnupg \
 	logrotate \
 	software-properties-common \
-	--no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/*
+	sudo \
+	--no-install-recommends
 
 # install gosu
-ENV GOSU_VERSION 1.11
+ENV GOSU_VERSION=1.17
 RUN set -ex; \
 	\
 	fetchDeps=' \
@@ -74,29 +75,33 @@ RUN set -ex; \
 	\
 	apt-get purge -y --auto-remove $fetchDeps
 
-# add mongo repo
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5 \
-	&& echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" >> /etc/apt/sources.list.d/mongo.list
+# add mongo GPG key
+RUN curl -fsSL https://pgp.mongodb.com/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+   --dearmor
 
+# add mongo repo
+RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+
+# Java JDK
+# RUN add-apt-repository ppa:openjdk-r/ppa
 
 # install packages
 RUN apt-get update && apt-get install -y \
 	binutils \
 	jsvc \
-	mongodb-server \
-	openjdk-8-jre-headless \
+	mongodb-org \
+	openjdk-17-jre-headless \
 	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 # unifi version
 # From: https://www.ubnt.com/download/unifi/
-ENV UNIFI_VERSION "7.0.25"
+ENV UNIFI_VERSION "9.3.45"
 
 # install unifi
 RUN apt-get update && apt-get install -y \
-		curl \
-		--no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/* \
+	--no-install-recommends \
 	&& curl -o /tmp/unifi.deb -L "http://dl.ubnt.com/unifi/${UNIFI_VERSION}/unifi_sysvinit_all.deb" \
 	&& dpkg -i /tmp/unifi.deb \
 	&& rm -rf /tmp/unifi.deb \
@@ -118,4 +123,4 @@ EXPOSE 8080 8081 8443 8843 8880 6789 10001/udp 3478/udp 1900/udp
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT [ "entrypoint.sh" ]
-CMD ["java", "-Xmx1024M", "-jar", "/usr/lib/unifi/lib/ace.jar", "start"]
+CMD ["java", "-Xmx1024M", "--add-opens", "java.base/java.time=ALL-UNNAMED", "-jar", "/usr/lib/unifi/lib/ace.jar", "start"]
